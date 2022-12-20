@@ -15,6 +15,9 @@ import argparse
 import os
 import hydra
 from linear_feature_eval import linear_eval, Evaluator
+
+sys.path.append(r'/Users/vadimpy/dev/skoltech/nla/skoltech_nla_ssl_project/ssl')
+
 import common_utils
 
 import logging
@@ -32,10 +35,10 @@ def hydra2dict(args):
 
 @hydra.main(config_path="config", config_name="byol_config.yaml")
 def main(args):
-    log.info(common_utils.print_info(args))
+    # log.info(common_utils.print_info(args))
     os.environ["CUDA_VISIBLE_DEVICES"] = f"{args.gpu}"
     common_utils.set_all_seeds(args.seed)
-    log.info(common_utils.pretty_print_args(args))
+    # log.info(common_utils.pretty_print_args(args))
 
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     log.info(f"Training with: {device}")
@@ -46,6 +49,9 @@ def main(args):
     if args["dataset"] == "stl10":
         train_dataset = datasets.STL10(args.dataset_path, split='train+unlabeled', download=True,
                                     transform=MultiViewDataInjector([data_transform, data_transform, data_transform_identity]))
+    elif args['dataset'] == 'mnist':
+        train_dataset = datasets.MNIST(args.dataset_path, download=True,
+                                    transform=MultiViewDataInjector([data_transform, data_transform, data_transform_identity]))        
     elif args["dataset"] == "cifar10":
         train_dataset = datasets.CIFAR10(args.dataset_path, train=True, download=True,
                                     transform=MultiViewDataInjector([data_transform, data_transform, data_transform_identity]))
@@ -66,7 +72,7 @@ def main(args):
         online_network = torch.nn.parallel.DataParallel(online_network)
 
     pretrained_path = args['network']['pretrained_path']
-    if pretrained_path:
+    if pretrained_path != 'None':
         try:
             load_params = torch.load(pretrained_path, map_location=torch.device(device))
             online_network.load_state_dict(load_params['online_network_state_dict'])
@@ -128,6 +134,8 @@ def main(args):
     else:
         raise RuntimeError(f'Unknown method {args["method"]}')
 
+    print(args['trainer'])
+    print('#' * 200)
     trainer.train(train_dataset)
 
     if not args["eval_after_each_epoch"]:

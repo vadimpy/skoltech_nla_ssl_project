@@ -49,7 +49,7 @@ generator:
   # otherwise we will create non-orthogonal embedding vectors.  
   d: null
 
-dataset_path: "/checkpoint/yuandong/datasets"
+dataset_path: "./checkpoint/yuandong/datasets"
 dataset_use_aug: false
 dataset_use_aug_strength: 0.9
 dataset: null

@@ -8,6 +8,7 @@ from torch.utils.tensorboard import SummaryWriter
 import numpy as np
 from utils import _create_model_training_folder
 from copy import deepcopy
+from tqdm import tqdm
 
 import logging
 log = logging.getLogger(__file__)
@@ -243,9 +244,9 @@ class BYOLTrainer:
         if self.corr_eigen_decomp:
             if not self.predictor_signaling_2:
                 log.info(f"compute_w_corr: Use eigen_decomp of size {M.size()}")
-            D, Q = torch.eig(M, eigenvectors=True)
+            D, Q = torch.linalg.eig(M)
             # Only use the real part. 
-            D = D[:,0]
+            D = D.abs()
         else:
             # Just use diagonal element. 
             if not self.predictor_signaling_2:
@@ -288,6 +289,10 @@ class BYOLTrainer:
         else:
             raise RuntimeError(f"Unkonwn balance_type: {balance_type}")
 
+        Q = Q.abs()
+        # print(eigen_values.diag().dtype)
+        # print(eigen_values.dtype)
+        # print('#' * 200)
         return Q @ eigen_values.diag() @ Q.t()
 
     def compute_w_minimal_space(self, M, M2, w): 
@@ -538,7 +543,7 @@ class BYOLTrainer:
         torch.save({'predictor_state_dict': self.predictor.state_dict()}, predictor_path)
 
     def train(self, train_dataset):
-        train_loader = DataLoader(train_dataset, batch_size=self.batch_size * torch.cuda.device_count(),
+        train_loader = DataLoader(train_dataset, batch_size=self.batch_size, # * torch.cuda.device_count(),
                                   num_workers=self.num_workers, drop_last=False, shuffle=True)
 
         niter = 0
@@ -560,7 +565,7 @@ class BYOLTrainer:
         # Save initial network for analysis
         self.save_model(os.path.join(model_checkpoints_folder, 'model_000.pth'))
 
-        for epoch_counter in range(1, 1 + self.max_epochs):
+        for epoch_counter in tqdm(range(1, 1 + self.max_epochs)):
             loss_record = []
             suffix = str(epoch_counter).zfill(3)
 

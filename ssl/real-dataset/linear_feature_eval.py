@@ -67,6 +67,11 @@ class Evaluator:
                                         transform=data_transforms)
             test_dataset = datasets.CIFAR100(dataset_path, train=False, download=False,
                                         transform=data_transforms)
+        elif dataset == 'mnist':
+            train_dataset = datasets.MNIST(dataset_path, train=True, download=False,
+                                        transform=data_transforms)
+            test_dataset = datasets.MNIST(dataset_path, train=False, download=False,
+                                        transform=data_transforms)
         else:
             raise RuntimeError(f"Unknown dataset! {dataset}")
 
