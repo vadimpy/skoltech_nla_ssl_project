@@ -2,7 +2,7 @@ import torchvision.models as models
 import torch.nn as nn
 import torch
 import random
-from models.mlp_head import MLPHead
+from models.mlp_head import MLPHead, MLPHeadBase
 from collections import OrderedDict
 import torch.nn.functional as F
 
@@ -467,3 +467,20 @@ class ResNet18(torch.nn.Module):
                     module.call_func(func_name, *args, **kwargs)
 
         go_through(self.encoder)
+
+
+class ResNet18Base(torch.nn.Module):
+    def __init__(self, *args, **kwargs):
+        super(ResNet18Base, self).__init__()
+        if kwargs['name'] == 'resnet18':
+            resnet = models.resnet18(pretrained=False)
+        elif kwargs['name'] == 'resnet50':
+            resnet = models.resnet50(pretrained=False)
+
+        self.encoder = torch.nn.Sequential(*list(resnet.children())[:-1])
+        self.projetion = MLPHeadBase(in_channels=resnet.fc.in_features, **kwargs['projection_head'])
+
+    def forward(self, x):
+        h = self.encoder(x)
+        h = h.view(h.shape[0], h.shape[1])
+        return self.projetion(h)

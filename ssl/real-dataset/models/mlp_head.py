@@ -157,47 +157,17 @@ class MLPHead(nn.Module):
             return s
         return None
 
-# class MLPHead(nn.Module):
-#     def __init__(self, in_channels, mlp_hidden_size, projection_size, option):
-#         super(MLPHead, self).__init__()
-#         self.linear1 = nn.Linear(in_channels, mlp_hidden_size)
-#         self.relu = nn.ReLU(inplace=True)
-#         self.linear2 = nn.Linear(mlp_hidden_size, projection_size)
-#         self.option = option
-#
-#     def forward(self, x):
-#         x = self.linear1(x)
-#
-#         if "ZeroMeanDetach" in self.option:
-#             x = x - x.mean(0).detach()
-#         elif "ZeroMean" in self.option:
-#             x = x - x.mean(0)
-#
-#         if "StdDetach" in self.option:
-#             x = x / (x.var(0).detach() + 1e-5).sqrt()
-#         elif "Std" in self.option:
-#             x = x / (x.var(0) + 1e-5).sqrt()
-#
-#         x = self.relu(x)
-#         x = self.linear2(x)
-#         return x
 
-# class MLPHead(nn.Module):
-#     def __init__(self, in_channels, mlp_hidden_size, projection_size, momentum=0.9):
-#         super(MLPHead, self).__init__()
-#         self.linear1 = nn.Linear(in_channels, mlp_hidden_size)
-#         self.relu = nn.ReLU(inplace=True)
-#         self.linear2 = nn.Linear(mlp_hidden_size, projection_size)
-#         self.momentum = momentum
-#         self.running_mean = None
-#
-#     def forward(self, x):
-#         x = self.linear1(x)
-#         if self.running_mean:
-#             self.running_mean = self.momentum * self.running_mean + (1 - self.momentum) * torch.mean(x).detach()
-#         else:
-#             self.running_mean = torch.mean(x).detach()
-#         x = x - self.running_mean
-#         x = self.relu(x)
-#         x = self.linear2(x)
-#         return x
+class MLPHeadBase(nn.Module):
+    def __init__(self, in_channels, mlp_hidden_size, projection_size):
+        super(MLPHeadBase, self).__init__()
+
+        self.net = nn.Sequential(
+            nn.Linear(in_channels, mlp_hidden_size),
+            nn.BatchNorm1d(mlp_hidden_size),
+            nn.ReLU(inplace=True),
+            nn.Linear(mlp_hidden_size, projection_size)
+        )
+
+    def forward(self, x):
+        return self.net(x)
