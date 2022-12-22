@@ -13,7 +13,7 @@ $ python3 ssl/real-dataset/main_BYOL.py
 
 To train DirectPred SSL method on MNIST, run
 ```shell
-$ python main.py seed=1 method=byol trainer.max_epochs=100 trainer.predictor_params.has_bias=false \
+$ python ssl/real-dataset/main.py seed=1 method=byol trainer.max_epochs=100 trainer.predictor_params.has_bias=false \
   trainer.predictor_params.normalization=no_normalization network.predictor_head.mlp_hidden_size=null \
   trainer.predictor_reg=corr trainer.predictor_freq=1 trainer.dyn_lambda=0.3 trainer.dyn_eps=0.01 \
   trainer balance_type=boost_scale dataset=mnist
