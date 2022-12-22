@@ -43,3 +43,12 @@ Preatrained models are available [here](https://drive.google.com/drive/folders/1
 
 Experimental study on MNIST: t-SNE embeddings visualization
 <img width="681" alt="image" src="https://user-images.githubusercontent.com/32225404/209073671-8336442b-1f46-46a5-ba8f-3b5795969417.png">
+
+
+We got confirmation of accuracy on MNIST dataset (2-layer predictor is comparable with DirectPred):
+
+Accuracy 0.86 for BYOL embeddings;
+
+Accuracy 0.89 for DirectPred embeddings.
+
+
