@@ -8,6 +8,9 @@ Yuandong Tian, Xinlei Chen, Surya Ganguli
 ICML 2021 [link](https://arxiv.org/abs/2102.06810), *Outstanding Paper Honorable Mention* 
 
 
+Our review of the article is available [here](https://github.com/vadimpy/skoltech_nla_ssl_project/blob/skoltech_main/understanding_ssl_dynamics_overview.pdf).  
+
+
 # Introduction
 The codebase is built from this [repo](https://github.com/sthalles/PyTorch-BYOL), with proper modifications. It is used in the following two arXiv papers:
 
