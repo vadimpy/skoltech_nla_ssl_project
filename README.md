@@ -39,5 +39,7 @@ The results of the training can be validated via ```ssl/real-dataset/visualizati
 
 # Results
 
+Preatrained models are available [here](https://drive.google.com/drive/folders/13LmiPzUFdu3OSFi80MoA_fqwi_6g1W0d?usp=sharing).
+
 Experimental study on MNIST: t-SNE embeddings visualization
 <img width="681" alt="image" src="https://user-images.githubusercontent.com/32225404/209073671-8336442b-1f46-46a5-ba8f-3b5795969417.png">
